@@ -1,0 +1,3 @@
+class ComparationsStrings {}
+
+class MapTexts {}
