@@ -1,10 +1,11 @@
 import 'package:path/path.dart';
+import 'package:plate_scanner_app/core/cache/database/db/tablas_bd.dart';
 import 'package:sqflite/sqflite.dart';
 
-class DataBaseOpe {
-  static DataBaseOpe instance = DataBaseOpe._init();
+class DataBase {
+  static DataBase instance = DataBase._init();
   static Database? _database;
-  DataBaseOpe._init();
+  DataBase._init();
 
   Future<Database> get database async {
     if (_database != null) return _database!;
@@ -14,13 +15,13 @@ class DataBaseOpe {
 
   Future<Database> initDB() async {
     final dbPath = await getDatabasesPath();
-    final path = join(dbPath, 'adm_app.db');
+    final path = join(dbPath, 'app.db');
     return await openDatabase(path,
         version: 1, onCreate: _createDB, onUpgrade: _upgradeDB);
   }
 
   Future<void> _createDB(Database db, int version) async {
-    //await db.execute(TablasBd.tablaUsuario);
+    await db.execute(TablasBd.tablaHistory);
   }
 
   Future _upgradeDB(Database db, int oldVersion, int newVersion) async {

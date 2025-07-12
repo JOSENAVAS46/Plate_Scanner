@@ -4,10 +4,12 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:plate_scanner_app/core/cache/database/crud_database/crud_history.dart';
 import 'package:plate_scanner_app/core/enums/enum.dart';
 import 'package:plate_scanner_app/core/errors/error_responses_methods.dart';
 import 'package:plate_scanner_app/core/services/location_service.dart';
 import 'package:plate_scanner_app/core/utils/methods.dart';
+import 'package:plate_scanner_app/features/_other/data/models/aux_history_converter_model.dart';
 import 'package:plate_scanner_app/features/_other/data/models/form_status.dart';
 import 'package:plate_scanner_app/features/identification/data/models/req_detect_model.dart';
 import 'package:plate_scanner_app/features/_other/data/models/res_detect_input_model.dart';
@@ -19,6 +21,7 @@ part 'identification_state.dart';
 class IdentificationBloc
     extends Bloc<IdentificationEvent, IdentificationState> {
   final IdentificationRepository repository;
+  final CrudHistory crudHistory = CrudHistory();
 
   IdentificationBloc({required this.repository})
       : super(IdentificationState()) {
@@ -84,6 +87,12 @@ class IdentificationBloc
       );
       if (response.status) {
         if (response.data!.data != null) {
+          var auxHistory = AuxHistoryConverterModel(
+            tipo: 'D',
+            objeto: jsonEncode(response.data!.data),
+            base64Img: base64Image,
+          );
+          crudHistory.insert(auxHistory);
           emit(state.copyWith(
             formStatus: DeteccionRecibidaState(response: response.data!),
           ));

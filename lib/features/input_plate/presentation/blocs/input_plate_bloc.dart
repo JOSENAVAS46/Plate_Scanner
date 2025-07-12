@@ -1,9 +1,13 @@
+import 'dart:convert';
+
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:plate_scanner_app/core/cache/database/crud_database/crud_history.dart';
 import 'package:plate_scanner_app/core/enums/enum.dart';
 import 'package:plate_scanner_app/core/errors/error_responses_methods.dart';
 import 'package:plate_scanner_app/core/services/location_service.dart';
 import 'package:plate_scanner_app/core/utils/methods.dart';
+import 'package:plate_scanner_app/features/_other/data/models/aux_history_converter_model.dart';
 import 'package:plate_scanner_app/features/_other/data/models/form_status.dart';
 import 'package:plate_scanner_app/features/_other/data/models/res_detect_input_model.dart';
 import 'package:plate_scanner_app/features/input_plate/data/models/req_input_plate_model.dart';
@@ -14,6 +18,7 @@ part 'input_plate_state.dart';
 
 class InputPlateBloc extends Bloc<InputPlateEvent, InputPlateState> {
   final InputPlateRepository repository;
+  final CrudHistory crudHistory = CrudHistory();
 
   InputPlateBloc({required this.repository}) : super(InputPlateState()) {
     on<SendInputPlateEvent>(_onSendInputPlateEvent);
@@ -69,6 +74,12 @@ class InputPlateBloc extends Bloc<InputPlateEvent, InputPlateState> {
       // 4. Manejar la respuesta
       if (response.status) {
         if (response.data!.data != null) {
+          var auxHistory = AuxHistoryConverterModel(
+            tipo: 'M',
+            objeto: jsonEncode(response.data!.data),
+            base64Img: null,
+          );
+          crudHistory.insert(auxHistory);
           emit(state.copyWith(
             formStatus: VehiculoRecibidoState(response: response.data!),
           ));

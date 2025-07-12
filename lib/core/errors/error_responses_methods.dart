@@ -47,25 +47,28 @@ Future<ApiResponseModel<T>> errorElse<T>({required HttpResult result}) async {
       data: null,
       status: false,
     );
+  } else if (result.statusCode == 500) {
+    return ApiResponseModel<T>(
+      mensaje: 'Error en el Servidor de la App\n'
+          'STATUSCODE[${result.statusCode}]',
+      data: null,
+      status: false,
+    );
   } else {
     if (result.error!.exeception != null) {
       return ApiResponseModel<T>(
-        mensaje: '''
-          Error Inesperado, Comuniquese con Soporte 
-          y proporcione la siguiente informacion:
-          Execepcion: ${result.error!.exeception}
-          [STATUSCODE${result.statusCode}]
-          ''',
+        mensaje: 'Error Inesperado, Comuniquese con Soporte'
+            '\ny proporcione la siguiente informacion:'
+            '\nExecepcion: ${result.error!.exeception}'
+            '\n[STATUSCODE${result.statusCode}]',
         data: null,
         status: false,
       );
     } else {
       return ApiResponseModel<T>(
-        mensaje: '''
-          Error Inesperado, Comuniquese con Soporte 
-          y proporcione la siguiente informacion
-          STATUSCODE[${result.statusCode}]
-          ''',
+        mensaje: 'Error Inesperado, Comuniquese con Soporte'
+            '\ny proporcione la siguiente informacion'
+            '\n STATUSCODE[${result.statusCode}]',
         data: null,
         status: false,
       );

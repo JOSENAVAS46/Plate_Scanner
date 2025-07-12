@@ -5,6 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:plate_scanner_app/features/history/presentation/blocs/history_bloc.dart';
 import 'package:plate_scanner_app/features/identification/data/repositories/identification_repository.dart';
 import 'package:plate_scanner_app/features/identification/domain/usecases/identification_use_case.dart';
 import 'package:plate_scanner_app/features/identification/presentation/blocs/identification_bloc.dart';
@@ -78,6 +79,7 @@ class _MyAppState extends State<MyApp> {
               create: (context) => InputPlateBloc(
                   repository:
                       RepositoryProvider.of<InputPlateRepository>(context))),
+          BlocProvider(create: (context) => HistoryBloc()),
         ],
         child: materialApp,
       ),
