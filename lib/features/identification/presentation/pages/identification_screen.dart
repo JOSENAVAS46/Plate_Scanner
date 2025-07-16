@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:plate_scanner_app/core/styles/style_adm.dart';
+import 'package:plate_scanner_app/core/utils/dialogs.dart';
 import 'package:plate_scanner_app/features/_other/presentation/widgets/separador.dart';
 import 'package:plate_scanner_app/features/identification/presentation/pages/image_viewer_screen.dart';
 
@@ -114,13 +115,10 @@ class _IdentificationScreenState extends State<IdentificationScreen>
         ),
       );
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error al seleccionar imagen: ${e.toString()}',
-              style: StyleApp.regularTxtStyleBlanco),
-          backgroundColor: Colors.red,
-        ),
-      );
+      DialogsAdm.msjError(
+          context: context,
+          mensaje: 'Error al seleccionar imagen: ${e.toString()}',
+          onConfirm: () {});
     }
   }
 

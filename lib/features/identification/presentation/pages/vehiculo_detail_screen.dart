@@ -125,9 +125,9 @@ class _VehiculoDetailScreenState extends State<VehiculoDetailScreen> {
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
                       onPressed: () {
-                        // Navigate back to the previous screen
-                        Navigator.of(context).pop();
-                        Navigator.of(context).pop();
+                        // Navigate TO dashboard
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, '/dashboard', (route) => false);
                       },
                       child: Text(
                         'Volver',

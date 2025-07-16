@@ -54,7 +54,7 @@ class IdentificationBloc
       final base64Image = base64Encode(bytes);
 
       // 3. Obtener ubicación (paralelamente si es posible)
-      final coordinates = await LocationService.getCoordinates();
+      final coordinates = await LocationService.getPreciseCoordinates();
       if (coordinates == null) {
         emit(state.copyWith(
           formStatus: MessageState(
@@ -86,20 +86,38 @@ class IdentificationBloc
         reqDetectModel: reqDetectModel,
       );
       if (response.status) {
-        if (response.data!.data != null) {
-          var auxHistory = AuxHistoryConverterModel(
-            tipo: 'D',
-            objeto: jsonEncode(response.data!.data),
-            base64Img: base64Image,
-          );
-          crudHistory.insert(auxHistory);
+        if (response.mensaje == 'INVALIDFORMAT') {
           emit(state.copyWith(
-            formStatus: DeteccionRecibidaState(response: response.data!),
+            formStatus: MessageState(
+              mensaje:
+                  'No se pudo reconocer la placa.\n¿Desea Ingresar la Placa Manualmente?',
+              tipo: TipoMensajeBloc.question,
+            ),
           ));
+        } else if (response.data != null) {
+          if (response.data!.data != null) {
+            var auxHistory = AuxHistoryConverterModel(
+              tipo: 'D',
+              objeto: jsonEncode(response.data!.data),
+              base64Img: base64Image,
+            );
+            crudHistory.insert(auxHistory);
+            emit(state.copyWith(
+              formStatus: DeteccionRecibidaState(response: response.data!),
+            ));
+          } else {
+            emit(state.copyWith(
+              formStatus: MessageState(
+                mensaje:
+                    'No se pudo reconocer la placa.\n¿Desea Ingresar la Placa Manualmente?',
+                tipo: TipoMensajeBloc.question,
+              ),
+            ));
+          }
         } else {
           emit(state.copyWith(
             formStatus: MessageState(
-              mensaje: response.data!.message ?? 'Error al enviar la placa',
+              mensaje: response.mensaje,
               tipo: TipoMensajeBloc.error,
             ),
           ));

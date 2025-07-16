@@ -8,3 +8,11 @@ class SendImgBytesEvent extends IdentificationEvent {
 
   SendImgBytesEvent({required this.imagePath});
 }
+
+class GetCombinationImagePlateEvent extends IdentificationEvent {
+  final String plate;
+
+  GetCombinationImagePlateEvent({
+    required this.plate,
+  });
+}

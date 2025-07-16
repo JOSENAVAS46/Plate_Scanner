@@ -20,8 +20,24 @@ class InputPlateScreen extends StatefulWidget {
 }
 
 class _InputPlateScreenState extends State<InputPlateScreen> {
-  final TextEditingController controller = TextEditingController();
+  final TextEditingController _plateController = TextEditingController();
+  final FocusNode _plateFocusNode = FocusNode();
   var veh = new Vehiculo();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).requestFocus(_plateFocusNode);
+    });
+  }
+
+  @override
+  void dispose() {
+    _plateFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -70,107 +86,129 @@ class _InputPlateScreenState extends State<InputPlateScreen> {
               centerTitle: true,
               backgroundColor: StyleApp.appColorPrimary,
             ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  SeparadorAltura(size: size, porcentaje: 4),
-                  Row(
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: Column(
                     children: [
-                      SeparadorAncho(size: size, porcentaje: 4),
-                      Expanded(
-                        child: TextFieldCustom(
-                          controller: controller,
-                          label: 'Placa',
-                          hint: 'ABC1234',
-                          maxLength: 7,
-                          textCapitalization: TextCapitalization.characters,
-                          inputFormatters: [
-                            FilteringTextInputFormatter.allow(
-                                RegExp(r'[A-Z0-9]')),
-                            UpperCaseTextFormatter(),
-                          ],
-                          customValidator: (value) {
-                            if (value == null || value.isEmpty)
-                              return 'Placa requerida';
-                            if (value.length != 7)
-                              return 'Debe tener 7 caracteres';
-                            if (!RegExp(r'^[A-Z0-9]{7}$').hasMatch(value)) {
-                              return 'Solo letras mayúsculas y números';
-                            }
-                            return null;
-                          },
-                        ),
+                      SeparadorAltura(size: size, porcentaje: 4),
+                      Row(
+                        children: [
+                          SeparadorAncho(size: size, porcentaje: 4),
+                          Expanded(
+                            child: TextFieldCustom(
+                              controller: _plateController,
+                              focusNode: _plateFocusNode,
+                              isCentered: true,
+                              label: 'Placa',
+                              hint: 'ABC123 - ABC1234 - AB123C',
+                              maxLength: 7,
+                              textCapitalization: TextCapitalization.characters,
+                              inputFormatters: [
+                                FilteringTextInputFormatter.allow(
+                                    RegExp(r'[A-Z0-9]')),
+                                UpperCaseTextFormatter(),
+                              ],
+                              customValidator: (value) {
+                                if (value == null || value.isEmpty)
+                                  return 'Placa requerida';
+                                if (value.length != 7)
+                                  return 'Debe tener 7 caracteres';
+                                if (!RegExp(r'^[A-Z0-9]{7}$').hasMatch(value)) {
+                                  return 'Solo letras mayúsculas y números';
+                                }
+                                return null;
+                              },
+                            ),
+                          ),
+                          SeparadorAncho(size: size, porcentaje: 4),
+                        ],
                       ),
-                      SeparadorAncho(size: size, porcentaje: 4),
-                    ],
-                  ),
-                  SeparadorAltura(size: size, porcentaje: 2),
-                  Row(
-                    children: [
-                      SeparadorAncho(size: size, porcentaje: 4),
-                      Expanded(
-                        child: CustomElevatedButton(
-                            text: 'Buscar',
-                            onPressed: () {
-                              veh = Vehiculo();
-                              context.read<InputPlateBloc>().add(
-                                  SendInputPlateEvent(
-                                      plate: controller.text.trim()));
-                            }),
-                      ),
-                      SeparadorAncho(size: size, porcentaje: 4),
-                    ],
-                  ),
-                  SeparadorAltura(size: size, porcentaje: 2),
-                  if (veh.placa != null)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Card(
-                        color: StyleApp.appColorBlanco,
-                        elevation: 4,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          side: BorderSide(
-                            color: StyleApp.appColorPrimary,
-                            width: 2,
+                      SeparadorAltura(size: size, porcentaje: 2),
+                      if (veh.placa != null)
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Card(
+                            color: StyleApp.appColorBlanco,
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              side: BorderSide(
+                                color: StyleApp.appColorPrimary,
+                                width: 2,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  _buildDetailRow('Placa:', veh.placa ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow('Marca:', veh.marca ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow(
+                                      'Modelo:', veh.modelo ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow('Color:', veh.color ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow(
+                                      'Año:', veh.anio?.toString() ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow('Clase:', veh.clase ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow(
+                                      'Servicio:', veh.servicio ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow('Fecha Mat:',
+                                      veh.fechaMatricula ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow('Fecha Cad:',
+                                      veh.fechaCaducidad ?? 'N/A'),
+                                  SeparadorAltura(size: size, porcentaje: 1),
+                                  _buildDetailRow(
+                                      'Polarizado:', veh.polarizado ?? 'N/A'),
+                                ],
+                              ),
+                            ),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _buildDetailRow('Placa:', veh.placa ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow('Marca:', veh.marca ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow('Modelo:', veh.modelo ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow('Color:', veh.color ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow(
-                                  'Año:', veh.anio?.toString() ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow('Clase:', veh.clase ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow(
-                                  'Servicio:', veh.servicio ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow(
-                                  'Fecha Mat:', veh.fechaMatricula ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow(
-                                  'Fecha Cad:', veh.fechaCaducidad ?? 'N/A'),
-                              SeparadorAltura(size: size, porcentaje: 1),
-                              _buildDetailRow(
-                                  'Polarizado:', veh.polarizado ?? 'N/A'),
-                            ],
-                          ),
-                        ),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 16,
+                  bottom: 16,
+                  child: Column(
+                    children: [
+                      FloatingActionButton(
+                        heroTag: 'clean_btn',
+                        onPressed: () {
+                          veh = Vehiculo();
+                          _plateController.clear();
+                          _plateFocusNode.requestFocus();
+                        },
+                        backgroundColor: StyleApp.appColorPrimary,
+                        child: Icon(Icons.clear_rounded,
+                            color: StyleApp.appColorBlanco),
                       ),
-                    ),
-                ],
-              ),
+                      SeparadorAltura(size: size, porcentaje: 2),
+                      FloatingActionButton(
+                        heroTag: 'search_btn',
+                        onPressed: () {
+                          veh = Vehiculo();
+                          context.read<InputPlateBloc>().add(
+                              SendInputPlateEvent(
+                                  plate: _plateController.text.trim()));
+                        },
+                        backgroundColor: StyleApp.appColorPrimary,
+                        child: Icon(Icons.search_rounded,
+                            color: StyleApp.appColorBlanco),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           );
         },

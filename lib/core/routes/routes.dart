@@ -4,6 +4,7 @@ import 'package:plate_scanner_app/features/_other/presentation/pages/splash_scre
 import 'package:plate_scanner_app/features/history/presentation/pages/history_screen.dart';
 import 'package:plate_scanner_app/features/home/presentation/pages/dashboard_screen.dart';
 import 'package:plate_scanner_app/features/identification/presentation/pages/identification_screen.dart';
+import 'package:plate_scanner_app/features/identification/presentation/pages/image_plate_input_plate_screen.dart';
 import 'package:plate_scanner_app/features/identification/presentation/pages/vehiculo_detail_screen.dart';
 import 'package:plate_scanner_app/features/input_plate/presentation/pages/input_plate_screen.dart';
 import 'package:plate_scanner_app/features/reports/presentation/pages/reports_screen.dart';
@@ -53,6 +54,13 @@ class Routes {
           return VehiculoDetailScreen(
             imagePath: args['imagePath'],
             vehiculo: args['vehiculo'],
+          );
+        });
+      case '/input_plate_with_image':
+        final args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (context) {
+          return ImagePlateInputPlateScreen(
+            imagePath: args['imagePath'],
           );
         });
 

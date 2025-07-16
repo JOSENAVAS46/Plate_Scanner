@@ -65,6 +65,7 @@ dependencies:
   share_plus: ^11.0.0
   image_picker: ^1.1.2
   geolocator: ^10.0.0
+  flutter_input_formatter: ^0.0.5
 
 dev_dependencies:
   flutter_launcher_icons: ^0.14.3

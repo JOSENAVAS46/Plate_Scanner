@@ -2,7 +2,7 @@ import 'package:intl/intl.dart';
 
 class DateTimeHandler {
   // METODO PARA OBTENER LA PRIMERA FECHA DEL MES Y LA ULTIMA FECHA DEL MES
-  List<DateTime> getFirstAndLastDateOfMonth(DateTime date) {
+  List<DateTime> getFirstLastTodayDateOfMonth(DateTime date) {
     DateTime firstDate = DateTime(date.year, date.month, 1);
     DateTime lastDate = DateTime(date.year, date.month + 1, 0);
     DateTime today = DateTime.now();

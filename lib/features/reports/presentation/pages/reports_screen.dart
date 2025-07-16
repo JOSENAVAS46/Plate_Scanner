@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:plate_scanner_app/core/enums/enum.dart';
 import 'package:plate_scanner_app/core/styles/style_adm.dart';
 import 'package:plate_scanner_app/core/utils/date_time_handler.dart';
@@ -14,7 +12,6 @@ import 'package:plate_scanner_app/features/_other/presentation/pages/loading_scr
 import 'package:plate_scanner_app/features/_other/presentation/widgets/custom_dropdown_button.dart';
 import 'package:plate_scanner_app/features/_other/presentation/widgets/custom_elevated_button.dart';
 import 'package:plate_scanner_app/features/_other/presentation/widgets/separador.dart';
-import 'package:plate_scanner_app/features/_other/presentation/widgets/text_field_custom.dart';
 import 'package:plate_scanner_app/features/reports/data/models/res_report_data_model.dart';
 import 'package:plate_scanner_app/features/reports/presentation/blocs/reports_bloc.dart';
 
@@ -27,9 +24,9 @@ class ReportsScreen extends StatefulWidget {
 
 class _ReportsScreenState extends State<ReportsScreen> {
   DateTime? _startDate =
-      DateTimeHandler().getFirstAndLastDateOfMonth(DateTime.now())[0];
+      DateTimeHandler().getFirstLastTodayDateOfMonth(DateTime.now())[2];
   DateTime? _endDate =
-      DateTimeHandler().getFirstAndLastDateOfMonth(DateTime.now())[2];
+      DateTimeHandler().getFirstLastTodayDateOfMonth(DateTime.now())[2];
   final ScrollController _scrollController = ScrollController();
   bool _showBackToTopButton = false;
   List<DropdownMenuItem<String>> _dropdownItems = [
@@ -74,9 +71,9 @@ class _ReportsScreenState extends State<ReportsScreen> {
       context: context,
       initialDate: isStartDate
           ? _startDate ??
-              DateTimeHandler().getFirstAndLastDateOfMonth(DateTime.now())[2]
+              DateTimeHandler().getFirstLastTodayDateOfMonth(DateTime.now())[2]
           : _endDate ??
-              DateTimeHandler().getFirstAndLastDateOfMonth(DateTime.now())[2],
+              DateTimeHandler().getFirstLastTodayDateOfMonth(DateTime.now())[2],
       firstDate: DateTime(2000),
       lastDate: DateTime.now(),
     );
@@ -159,167 +156,179 @@ class _ReportsScreenState extends State<ReportsScreen> {
                   ),
               ],
             ),
-            body: SafeArea(
-              child: Column(
-                children: [
-                  // Date filter controls
-                  Padding(
-                    padding: const EdgeInsets.all(16),
-                    child: Column(
-                      children: [
-                        Row(
+            body: Stack(
+              children: [
+                SafeArea(
+                  child: Column(
+                    children: [
+                      // Date filter controls
+                      Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Column(
                           children: [
-                            Expanded(
-                              child: InkWell(
-                                onTap: () => _selectDate(context, true),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        _startDate == null
-                                            ? 'Fecha inicial'
-                                            : DateFormat('dd/MM/yyyy')
-                                                .format(_startDate!),
-                                        style: StyleApp.regularTxtStyleBlanco,
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () => _selectDate(context, true),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      const Icon(Icons.calendar_today_rounded),
-                                    ],
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            _startDate == null
+                                                ? 'Fecha inicial'
+                                                : DateFormat('dd/MM/yyyy')
+                                                    .format(_startDate!),
+                                            style:
+                                                StyleApp.regularTxtStyleBlanco,
+                                          ),
+                                          const Icon(
+                                              Icons.calendar_today_rounded),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Expanded(
-                              child: InkWell(
-                                onTap: () => _selectDate(context, false),
-                                child: Container(
-                                  padding: const EdgeInsets.all(12),
-                                  decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.grey),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        _endDate == null
-                                            ? 'Fecha final'
-                                            : DateFormat('dd/MM/yyyy')
-                                                .format(_endDate!),
-                                        style: StyleApp.regularTxtStyleBlanco,
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: InkWell(
+                                    onTap: () => _selectDate(context, false),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      const Icon(Icons.calendar_month_rounded),
-                                    ],
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            _endDate == null
+                                                ? 'Fecha final'
+                                                : DateFormat('dd/MM/yyyy')
+                                                    .format(_endDate!),
+                                            style:
+                                                StyleApp.regularTxtStyleBlanco,
+                                          ),
+                                          const Icon(
+                                              Icons.calendar_month_rounded),
+                                        ],
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                          ],
-                        ),
-                        SeparadorAltura(size: size, porcentaje: 2),
-                        CustomDropdownButton(
-                          value: _selectedType,
-                          items: _dropdownItems,
-                          onChanged: (value) {
-                            setState(() {
-                              _consultas.clear();
+                            SeparadorAltura(size: size, porcentaje: 2),
+                            CustomDropdownButton(
+                              value: _selectedType,
+                              items: _dropdownItems,
+                              onChanged: (value) {
+                                setState(() {
+                                  _consultas.clear();
 
-                              _selectedType = value!;
-                            });
-                          },
-                          isPrimary: false, // o false para el estilo secundario
-                        ),
-                        SeparadorAltura(size: size, porcentaje: 2),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              flex: 1,
-                              child: CustomElevatedButton(
-                                text: 'Limpiar',
-                                isPrimary: false,
-                                onPressed: () {
-                                  setState(() {
-                                    _consultas.clear();
-                                    _selectedType = 'T';
-                                    _startDate = DateTimeHandler()
-                                        .getFirstAndLastDateOfMonth(
-                                            DateTime.now())[0];
-                                    _endDate = DateTimeHandler()
-                                        .getFirstAndLastDateOfMonth(
-                                            DateTime.now())[2];
-                                  });
-                                },
-                              ),
-                            ),
-                            SeparadorAncho(size: size, porcentaje: 2),
-                            Expanded(
-                              flex: 1,
-                              child: CustomElevatedButton(
-                                text: 'Buscar',
-                                onPressed: () {
-                                  if (_startDate != null ||
-                                      _endDate != null ||
-                                      _selectedType.isNotEmpty) {
-                                    _consultas.clear();
-                                    context.read<ReportsBloc>().add(
-                                        GetDataReportEvent(
-                                            fechaDesde: _startDate!,
-                                            fechaHasta: _endDate!,
-                                            tipo: _selectedType));
-                                  } else {
-                                    DialogsAdm.msjError(
-                                        context: context,
-                                        mensaje:
-                                            'Debe seleccionar todos los filtros');
-                                  }
-                                },
-                              ),
+                                  _selectedType = value!;
+                                });
+                              },
+                              isPrimary: false,
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      Divider(
+                        color: StyleApp.appColorPrimary,
+                        thickness: 2,
+                      ),
+                      SeparadorAltura(size: size, porcentaje: 1),
+                      Expanded(
+                        child: _consultas.isEmpty
+                            ? Center(
+                                child: Text(
+                                  'No hay consultas para mostrar',
+                                  style: StyleApp.regularTxtStyleBlanco,
+                                ),
+                              )
+                            : ListView.builder(
+                                controller: _scrollController,
+                                itemCount: _consultas.length,
+                                itemBuilder: (context, index) {
+                                  return _ConsultaCard(
+                                      consulta: _consultas[index]);
+                                },
+                              ),
+                      ),
+                    ],
                   ),
-                  Divider(
-                    color: StyleApp.appColorPrimary,
-                    thickness: 2,
+                ),
+                Positioned(
+                  right: 16,
+                  bottom: 16,
+                  child: Column(
+                    children: [
+                      FloatingActionButton(
+                        heroTag: 'clean_btn',
+                        onPressed: () {
+                          setState(() {
+                            _consultas.clear();
+                            _selectedType = 'T';
+                            _startDate = DateTimeHandler()
+                                .getFirstLastTodayDateOfMonth(
+                                    DateTime.now())[2];
+                            _endDate = DateTimeHandler()
+                                .getFirstLastTodayDateOfMonth(
+                                    DateTime.now())[2];
+                          });
+                        },
+                        backgroundColor: StyleApp.appColorPrimary,
+                        child: Icon(Icons.clear_rounded,
+                            color: StyleApp.appColorBlanco),
+                      ),
+                      SeparadorAltura(size: size, porcentaje: 2),
+                      FloatingActionButton(
+                        heroTag: 'search_btn',
+                        onPressed: () {
+                          if (_startDate != null ||
+                              _endDate != null ||
+                              _selectedType.isNotEmpty) {
+                            _consultas.clear();
+                            context.read<ReportsBloc>().add(GetDataReportEvent(
+                                fechaDesde: _startDate!,
+                                fechaHasta: _endDate!,
+                                tipo: _selectedType));
+                          } else {
+                            DialogsAdm.msjError(
+                                context: context,
+                                mensaje: 'Debe seleccionar todos los filtros');
+                          }
+                        },
+                        backgroundColor: StyleApp.appColorPrimary,
+                        child: Icon(Icons.search_rounded,
+                            color: StyleApp.appColorBlanco),
+                      ),
+                      SeparadorAltura(size: size, porcentaje: 2),
+                      if (_showBackToTopButton)
+                        FloatingActionButton(
+                          heroTag: 'back_to_top_btn',
+                          onPressed: _scrollToTop,
+                          backgroundColor: StyleApp.appColorPrimary,
+                          child: Icon(Icons.arrow_upward,
+                              color: StyleApp.appColorBlanco),
+                        )
+                      else
+                        Container()
+                    ],
                   ),
-                  SeparadorAltura(size: size, porcentaje: 1),
-                  Expanded(
-                    child: _consultas.isEmpty
-                        ? Center(
-                            child: Text(
-                              'No hay consultas para mostrar',
-                              style: StyleApp.regularTxtStyleBlanco,
-                            ),
-                          )
-                        : ListView.builder(
-                            controller: _scrollController,
-                            itemCount: _consultas.length,
-                            itemBuilder: (context, index) {
-                              return _ConsultaCard(consulta: _consultas[index]);
-                            },
-                          ),
-                  ),
-                ],
-              ),
+                ),
+              ],
             ),
-            floatingActionButton: _showBackToTopButton
-                ? FloatingActionButton(
-                    onPressed: _scrollToTop,
-                    backgroundColor: StyleApp.appColorPrimary,
-                    child: const Icon(Icons.arrow_upward, color: Colors.white),
-                  )
-                : null,
           );
         },
       ),

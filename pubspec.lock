@@ -334,6 +334,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1"
+  flutter_input_formatter:
+    dependency: "direct main"
+    description:
+      name: flutter_input_formatter
+      sha256: "016b9087623763f494ba817c8f87b0c9e12dccdf6b0cc41a570f96a53699cbdb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:

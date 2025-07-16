@@ -27,6 +27,9 @@ class IdentificationUseCase extends IdentificationRepository {
         final data = ResDetectInputModel.fromJson(res.data!);
         return ApiResponseModel(
             status: true, mensaje: 'Imagen procesada', data: data);
+      } else if (res.statusCode == 400) {
+        return ApiResponseModel(
+            status: true, mensaje: 'INVALIDFORMAT', data: null);
       } else {
         return errorElse(result: res);
       }

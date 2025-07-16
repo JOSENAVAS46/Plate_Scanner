@@ -39,7 +39,7 @@ class InputPlateBloc extends Bloc<InputPlateEvent, InputPlateState> {
         return;
       }
       var device = await getDeviceInfo();
-      final coordinates = await LocationService.getCoordinates();
+      final coordinates = await LocationService.getPreciseCoordinates();
       if (coordinates == null) {
         emit(state.copyWith(
           formStatus: MessageState(

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:plate_scanner_app/core/network/api_response_model.dart';
@@ -28,12 +29,21 @@ Future<ApiResponseModel<T>> errorElse<T>({required HttpResult result}) async {
       status: false,
     );
   } else if (result.statusCode == 400) {
-    return ApiResponseModel<T>(
-      mensaje: '${result.error!.data.message}\n'
-          'STATUSCODE[${result.statusCode}]',
-      data: null,
-      status: false,
-    );
+    var dat = jsonDecode(result.error!.data);
+    if (dat != null) {
+      return ApiResponseModel<T>(
+        mensaje: dat['message'],
+        data: null,
+        status: false,
+      );
+    } else {
+      return ApiResponseModel<T>(
+        mensaje: '${result.error!.data.message}\n'
+            'STATUSCODE[${result.statusCode}]',
+        data: null,
+        status: false,
+      );
+    }
   } else if (result.statusCode == 401) {
     return ApiResponseModel<T>(
       mensaje: 'Tu sesión ha expirado. Inicia sesión nuevamente para continuar',
@@ -78,10 +88,8 @@ Future<ApiResponseModel<T>> errorElse<T>({required HttpResult result}) async {
 
 Future<ApiResponseModel<T>> errorCatch<T>({required Object execepcion}) async {
   return ApiResponseModel<T>(
-    mensaje: '''
-          Error
-          ${execepcion.toString()}
-          ''',
+    mensaje: 'Error:\n'
+        '${execepcion.toString()}',
     data: null,
     status: false,
   );

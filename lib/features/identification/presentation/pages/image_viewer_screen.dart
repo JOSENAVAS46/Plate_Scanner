@@ -59,6 +59,36 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                 DialogsAdm.msjExito(
                     context: context, mensaje: formStatus.mensaje);
                 break;
+              case TipoMensajeBloc.question:
+                if (formStatus.mensaje
+                    .contains("No se pudo reconocer la placa")) {
+                  DialogsAdm.mostrarPregunta(
+                    context: context,
+                    mensaje: formStatus.mensaje,
+                    onConfirm: () {
+                      // Navegar a la pantalla de ingreso manual con la imagen
+                      Navigator.pushNamed(
+                        context,
+                        '/input_plate_with_image',
+                        arguments: {
+                          'imagePath': widget.imagePath,
+                        },
+                      );
+                    },
+                    onCancel: () {
+                      Navigator.pop(context); // Volver atrás si cancela
+                    },
+                  );
+                } else {
+                  // Manejar otros tipos de preguntas
+                  DialogsAdm.mostrarPregunta(
+                    context: context,
+                    mensaje: formStatus.mensaje,
+                    onConfirm: () {},
+                    onCancel: () {},
+                  );
+                }
+                break;
               default:
                 DialogsAdm.msjSistema(
                     context: context, mensaje: formStatus.mensaje);
@@ -88,7 +118,7 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
               children: [
                 SeparadorAltura(size: size, porcentaje: 2),
                 Text(
-                  '¿La foto está bien tomada?',
+                  '¿La foto es correcta?',
                   style: StyleApp.regularTxtStyleBoldBlanco,
                 ),
                 SeparadorAltura(size: size, porcentaje: 2),

@@ -27,6 +27,7 @@ class DialogsAdm {
   // Texto común para los botones
   static Widget _buttonText(String text, bool primary) => Text(
         text,
+        textAlign: TextAlign.end,
         style: StyleApp.smallTxtStyleBold.copyWith(
           color: primary ? StyleApp.appColorBlanco : StyleApp.appColorPrimary,
         ),
@@ -77,15 +78,13 @@ class DialogsAdm {
             ),
           ),
           actions: <Widget>[
-            Center(
-              child: TextButton(
-                style: _buttonStyle(true),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (onConfirm != null) onConfirm();
-                },
-                child: _buttonText('Aceptar', true),
-              ),
+            TextButton(
+              style: _buttonStyle(true),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) onConfirm();
+              },
+              child: _buttonText('Aceptar', true),
             ),
           ],
         );
@@ -138,15 +137,13 @@ class DialogsAdm {
             ),
           ),
           actions: <Widget>[
-            Center(
-              child: TextButton(
-                style: _buttonStyle(true),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (onConfirm != null) onConfirm();
-                },
-                child: _buttonText('Aceptar', true),
-              ),
+            TextButton(
+              style: _buttonStyle(true),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) onConfirm();
+              },
+              child: _buttonText('Aceptar', true),
             ),
           ],
         );
@@ -199,15 +196,13 @@ class DialogsAdm {
             ),
           ),
           actions: <Widget>[
-            Center(
-              child: TextButton(
-                style: _buttonStyle(true),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  if (onConfirm != null) onConfirm();
-                },
-                child: _buttonText('Aceptar', true),
-              ),
+            TextButton(
+              style: _buttonStyle(true),
+              onPressed: () {
+                Navigator.of(context).pop();
+                if (onConfirm != null) onConfirm();
+              },
+              child: _buttonText('Aceptar', true),
             ),
           ],
         );
@@ -262,7 +257,7 @@ class DialogsAdm {
           ),
           actions: <Widget>[
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Expanded(
                   child: Padding(

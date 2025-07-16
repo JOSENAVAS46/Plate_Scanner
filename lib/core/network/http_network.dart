@@ -13,13 +13,17 @@ class HttpNetworkSettings {
       Map<String, String> queryParameters = const {},
       dynamic body,
       Parser<T>? parser,
-      Duration timeOut = const Duration(seconds: 30)}) async {
+      Duration timeOut = const Duration(seconds: 60)}) async {
     int? statusCode;
     dynamic data;
     try {
       final url = Uri.parse('$server/$path');
       print('<============ URL ============>');
       print(url);
+      print('<============ HEADERS ============>');
+      print(headers);
+      print('<============ BODY ============>');
+      print(body);
 
       final response = await senRequest(
           url: url,
